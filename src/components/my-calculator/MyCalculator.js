@@ -114,6 +114,8 @@ const MyCalculator = ({ hasSwitchedView }) => {
       ];
       setHistory(addHistoryToList);
       setOperatorSelected(false);
+      setSelectedNumber(0);
+      setPreviousNumber();
     }
 
     if (operator.name === "percentage") {
