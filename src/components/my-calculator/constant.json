@@ -1,5 +1,6 @@
 {
-  "operatorsVertical": [{
+  "operatorsVertical": [
+    {
       "name": "divide",
       "operator": "/",
       "symbol": "÷"
@@ -8,7 +9,8 @@
       "name": "multiplication",
       "operator": "*",
       "symbol": "*"
-    }, {
+    },
+    {
       "name": "subtract",
       "operator": "-",
       "symbol": "-"
@@ -23,52 +25,171 @@
       "symbol": "="
     }
   ],
-  "operatorsHorizontal": [{
-    "name": "clear",
-    "symbol": "C"
-  }, {
-    "name": "negative",
-    "operator": "-",
-    "symbol": "+/-"
-  },
+  "operatorsHorizontal": [
+    {
+      "name": "clear",
+      "symbol": "C"
+    },
+    {
+      "name": "negative",
+      "operator": "-",
+      "symbol": "+/-"
+    },
     {
       "name": "percentage",
       "symbol": "%"
     }
   ],
-  "numKeypads": [{
-    "name": "7",
-    "value": 7
-  }, {
-    "name": "8",
-    "value": 8
-  }, {
-    "name": "9",
-    "value": 9
-  }, {
-    "name": "4",
-    "value": 4
-  }, {
-    "name": "5",
-    "value": 5
-  }, {
-    "name": "6",
-    "value": 6
-  }, {
-    "name": "1",
-    "value": 1
-  }, {
-    "name": "2",
-    "value": 2
-  }, {
-    "name": "3",
-    "value": 3
-  }, {
-    "name": "0",
-    "value": 0
-  }, {
-    "name": ".",
-    "value": null
-  }]
-
+  "numKeypads": [
+    {
+      "name": "7",
+      "value": 7
+    },
+    {
+      "name": "8",
+      "value": 8
+    },
+    {
+      "name": "9",
+      "value": 9
+    },
+    {
+      "name": "4",
+      "value": 4
+    },
+    {
+      "name": "5",
+      "value": 5
+    },
+    {
+      "name": "6",
+      "value": 6
+    },
+    {
+      "name": "1",
+      "value": 1
+    },
+    {
+      "name": "2",
+      "value": 2
+    },
+    {
+      "name": "3",
+      "value": 3
+    },
+    {
+      "name": "0",
+      "value": 0
+    },
+    {
+      "name": ".",
+      "value": null
+    }
+  ],
+  "otherSymbols": [
+    {
+      "name": "opening_brakcet",
+      "symbol": "("
+    },
+    {
+      "name": "closing_brakcet",
+      "symbol": ")"
+    },
+    {
+      "name": "mc",
+      "symbol": "mc"
+    },
+    {
+      "name": "mplus",
+      "symbol": "m+"
+    },
+    {
+      "name": "mr",
+      "symbol": "mr"
+    },
+    {
+      "name": "second",
+      "symbol": "2nd"
+    },
+    {
+      "name": "Xsquare",
+      "symbol": "X2"
+    },
+    {
+      "name": "XCube",
+      "symbol": "X3"
+    },
+    {
+      "name": "ez",
+      "symbol": "ez"
+    },
+    {
+      "name": "tens",
+      "symbol": "10x"
+    },
+    {
+      "name": "1/x",
+      "symbol": "1/x"
+    },
+    {
+      "name": "2root",
+      "symbol": "2X"
+    },
+    {
+      "name": "In",
+      "symbol": "In"
+    },
+    {
+      "name": "log10",
+      "symbol": "log10"
+    },
+    {
+      "name": "x!",
+      "symbol": "x!"
+    },
+    {
+      "name": "sin",
+      "symbol": "sin"
+    },
+    {
+      "name": "cos",
+      "symbol": "cos"
+    },
+    {
+      "name": "tan",
+      "symbol": "tan"
+    },
+    {
+      "name": "e",
+      "symbol": "e"
+    },
+    {
+      "name": "EE",
+      "symbol": "EE"
+    },
+    {
+      "name": "Rad",
+      "symbol": "Rad"
+    },
+    {
+      "name": "sinh",
+      "symbol": "sinh"
+    },
+    {
+      "name": "cosh",
+      "symbol": "cosh"
+    },
+    {
+      "name": "tanh",
+      "symbol": "tanh"
+    },
+    {
+      "name": "lamda",
+      "symbol": "la"
+    },
+    {
+      "name": "Rand",
+      "symbol": "Rand"
+    }
+  ]
 }

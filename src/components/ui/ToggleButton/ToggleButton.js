@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 /**
  * buttonId => unique and mandatory
@@ -15,7 +16,7 @@ const Index = (props) => {
     buttonID,
     labelChecked,
     labelUnchecked,
-    handleToggleChange
+    handleToggleChange,
   } = props;
   const [isChecked, setChecked] = useState(props.defaultState);
 
@@ -44,14 +45,22 @@ const Index = (props) => {
 
 export default Index;
 
+Index.propTypes = {
+  variant: PropTypes.string,
+  buttonID: PropTypes.string.isRequired,
+  labelChecked: PropTypes.string,
+  labelUnchecked: PropTypes.string,
+  handleToggleChange: PropTypes.func,
+};
+
 const ToggleSwitch = styled.div`
   height: 32px;
   width: 100%;
   border-radius: 60px;
-  background: ${(props) => props.theme.colour.bodyColor};
+  background: #4a5379;
   transition: background-color 0.3s cubic-bezier(0.86, 0, 0.07, 1);
   box-sizing: border-box;
-  color: ${(props) => props.theme.colour.whiteColor};
+  color: #ffffff;
   position: relative;
   font-size: 14px;
   &:before {
@@ -71,7 +80,7 @@ const ToggleSwitch = styled.div`
     width: 30px;
     height: 26px;
     z-index: 5;
-    background-color: ${(props) => props.theme.colour.whiteColor};
+    background-color: #ffffff;
     transition: transform 0.3s cubic-bezier(0.86, 0, 0.07, 1);
   }
 `;
@@ -83,7 +92,7 @@ const Label = styled.label`
 `;
 
 const CheckBox = styled.input.attrs({
-  type: "checkbox"
+  type: "checkbox",
 })`
   opacity: 0;
   position: absolute;
@@ -92,7 +101,7 @@ const CheckBox = styled.input.attrs({
   &:checked {
     ~ ${Label} {
       ${ToggleSwitch} {
-        background-color: ${(props) => props.theme.colour.success};
+        background-color: #4caf50;
         &:before {
           content: attr(data-checked);
           top: 50%;
@@ -117,7 +126,7 @@ const ToggleButton = styled.div`
     ${CheckBox}:checked {
       ~ ${Label} {
         ${ToggleSwitch} {
-          background-color: ${(props) => props.theme.colour.primary};
+          background-color: #ff8eaa;
         }
       }
     }
@@ -127,7 +136,7 @@ const ToggleButton = styled.div`
     ${CheckBox}:checked {
       ~ ${Label} {
         ${ToggleSwitch} {
-          background-color: ${(props) => props.theme.colour.success};
+          background-color: #4caf50;
         }
       }
     }
