@@ -6,7 +6,7 @@
       "symbol": "÷"
     },
     {
-      "name": "multiplication",
+      "name": "multiply",
       "operator": "*",
       "symbol": "*"
     },
@@ -84,112 +84,6 @@
     {
       "name": ".",
       "value": null
-    }
-  ],
-  "otherSymbols": [
-    {
-      "name": "opening_brakcet",
-      "symbol": "("
-    },
-    {
-      "name": "closing_brakcet",
-      "symbol": ")"
-    },
-    {
-      "name": "mc",
-      "symbol": "mc"
-    },
-    {
-      "name": "mplus",
-      "symbol": "m+"
-    },
-    {
-      "name": "mr",
-      "symbol": "mr"
-    },
-    {
-      "name": "second",
-      "symbol": "2nd"
-    },
-    {
-      "name": "Xsquare",
-      "symbol": "X2"
-    },
-    {
-      "name": "XCube",
-      "symbol": "X3"
-    },
-    {
-      "name": "ez",
-      "symbol": "ez"
-    },
-    {
-      "name": "tens",
-      "symbol": "10x"
-    },
-    {
-      "name": "1/x",
-      "symbol": "1/x"
-    },
-    {
-      "name": "2root",
-      "symbol": "2X"
-    },
-    {
-      "name": "In",
-      "symbol": "In"
-    },
-    {
-      "name": "log10",
-      "symbol": "log10"
-    },
-    {
-      "name": "x!",
-      "symbol": "x!"
-    },
-    {
-      "name": "sin",
-      "symbol": "sin"
-    },
-    {
-      "name": "cos",
-      "symbol": "cos"
-    },
-    {
-      "name": "tan",
-      "symbol": "tan"
-    },
-    {
-      "name": "e",
-      "symbol": "e"
-    },
-    {
-      "name": "EE",
-      "symbol": "EE"
-    },
-    {
-      "name": "Rad",
-      "symbol": "Rad"
-    },
-    {
-      "name": "sinh",
-      "symbol": "sinh"
-    },
-    {
-      "name": "cosh",
-      "symbol": "cosh"
-    },
-    {
-      "name": "tanh",
-      "symbol": "tanh"
-    },
-    {
-      "name": "lamda",
-      "symbol": "la"
-    },
-    {
-      "name": "Rand",
-      "symbol": "Rand"
     }
   ]
 }

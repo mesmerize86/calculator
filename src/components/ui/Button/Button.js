@@ -52,7 +52,7 @@ const Button = styled.div`
     props.verticalOperator &&
     css`
       background-color: #ffac1c;
-      font-size: 25px;
+      font-size: 35px;
 
       &:hover {
         background-color: #d68d0f;

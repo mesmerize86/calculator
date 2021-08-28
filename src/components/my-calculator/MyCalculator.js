@@ -1,55 +1,48 @@
-/*
- * displayNumber, setDisplayNumber                          => display section.
- * selectedNumber, setSelectedNumber                        => to format numbers
- * hasDecimalSelected, setDecimalSelected                   => flag to check if decimal has selected
- * hasNumberSelected, setNumberSelected                     => flag to check if number has selected
- * hasOperatorSelected, setOperatorSelected                 => flag to check if operator has selected
- * expressions, setExpressions                              => expression to calculate numbers
- * previousNumber, setPreviousNumber                        => get the previous number
- * hasNegativeOperatorSelected, setNegativeOperatorSelected => flag to check if negative operator has selected
- * selectedOperator, setSelectedOperator                    => set the latest selected operator
- * history, setHistory                                      => logging history
- *
- * */
 import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import Button from "../ui/Button/Button";
-import PropTypes from "prop-types";
+import { calculate } from "./calculate";
 
 import {
   operatorsHorizontal,
   operatorsVertical,
   numKeypads,
-  otherSymbols,
 } from "./constant.json";
 
-const MyCalculator = ({ hasSwitchedView }) => {
+const MyCalculator = () => {
   const [displayNumber, setDisplayNumber] = useState(0);
-  const [resultOutput, setResultOutput] = useState(0);
-  const [selectedNumber, setSelectedNumber] = useState(0);
-  const [hasDecimalSelected, setDecimalSelected] = useState(false);
-  const [hasOperatorSelected, setOperatorSelected] = useState(false);
-  const [expressions, setExpressions] = useState(null);
+  const [previousSelectedOperator, setPreviousSelectedOperator] = useState("");
+  const [currentNumber, setCurrentNumber] = useState(0);
   const [previousNumber, setPreviousNumber] = useState(0);
-  const [hasNegativeOperatorSelected, setNegativeOperatorSelected] =
-    useState(false);
-  const [selectedOperator, setSelectedOperator] = useState("");
-  const [history, setHistory] = useState([]);
+  const [hasDecimalSelected, setDecimalSelected] = useState(false);
 
   useEffect(() => {
-    if (previousNumber) {
-      //display formatted number
-      const formatNumber = new Intl.NumberFormat().format(previousNumber);
-      //if decimal is selected, forcefully show it to screen.
-      if (hasDecimalSelected) {
-        setDisplayNumber(previousNumber);
-      } else if (hasNegativeOperatorSelected) {
-        setDisplayNumber("-" + formatNumber);
-      } else {
-        setDisplayNumber(formatNumber);
-      }
+    /*
+     * if user select decimal at the beginning, we want to display decimal in screen
+     * */
+    if (hasDecimalSelected) {
+      setDisplayNumber(currentNumber);
     }
-  }, [previousNumber, hasDecimalSelected, hasNegativeOperatorSelected]);
+  }, [hasDecimalSelected]);
+
+  /* calculate the numbers and get result to screen */
+  const getResult = () => {
+    let output = calculate(previousNumber)(previousSelectedOperator.name)(
+      currentNumber
+    );
+    setPreviousNumber(output);
+    setCurrentNumber(0);
+    DisplayScreen(output);
+  };
+
+  /* Display on screen */
+  const DisplayScreen = (number) => {
+    //if number has decimal, do not format
+    const formatNumber = hasDecimalSelected
+      ? number
+      : new Intl.NumberFormat().format(number);
+    setDisplayNumber(formatNumber);
+  };
 
   /**
    * handle operators
@@ -61,69 +54,35 @@ const MyCalculator = ({ hasSwitchedView }) => {
     //reset all
     if (operator.name === "clear") {
       setDisplayNumber(0);
+      setPreviousSelectedOperator("");
+      setCurrentNumber(0);
+      setPreviousNumber(0);
       setDecimalSelected(false);
-      setSelectedNumber(0);
-      setExpressions(null);
-      setPreviousNumber();
-      setNegativeOperatorSelected(false);
     }
-
-    if (operator.name === "negative") {
-      if (!hasNegativeOperatorSelected) {
-        //if the number is already selected and tap on negative operator
-        if (selectedNumber > 0) {
-          setExpressions("parseFloat(-" + selectedNumber + ")");
-        } else {
-          setExpressions(operator.operator);
-        }
-        setDisplayNumber("-" + displayNumber);
-      } else {
-        setExpressions(null);
-        setDisplayNumber(0);
-      }
-      setNegativeOperatorSelected(!hasNegativeOperatorSelected);
-    }
-
-    //when user tap operator and display number is 0, do nothing
-    if (displayNumber === 0) return;
-
     if (
       operator.name === "add" ||
       operator.name === "subtract" ||
       operator.name === "divide" ||
-      operator.name === "multiplication"
+      operator.name === "multiply"
     ) {
-      setSelectedNumber(0);
-      setDecimalSelected(false);
-      setNegativeOperatorSelected(false);
-      setOperatorSelected(true);
-      setSelectedOperator(operator);
+      if (previousNumber === 0) {
+        setPreviousNumber(currentNumber);
+      } else if (previousSelectedOperator !== "" && currentNumber !== 0) {
+        getResult();
+      }
+      setPreviousSelectedOperator(operator);
+      setCurrentNumber(0);
     }
 
     if (operator.name === "equals") {
-      let result = eval(expressions);
-      setResultOutput(result);
-      setDisplayNumber(new Intl.NumberFormat().format(result));
-      const replacedExpression = expressions
-        .replace(/parseFloat/, "")
-        .replace(/[(]/, "")
-        .replace(/[)]/, "");
-      const addHistoryToList = [
-        ...history,
-        { expressions: replacedExpression, result: result },
-      ];
-      setHistory(addHistoryToList);
-      setOperatorSelected(false);
-      setSelectedNumber(0);
-      setPreviousNumber();
+      getResult();
     }
 
     if (operator.name === "percentage") {
-      let result = (resultOutput < 1 ) ? previousNumber / 100 : resultOutput / 100;
-      setDisplayNumber(result);
-      setExpressions("parseFloat(" + result + ")");
-      setOperatorSelected(false);
+      const output = displayNumber.replace(/[,]/g, "") / 100;
+      DisplayScreen(output);
     }
+    setDecimalSelected(false);
   };
 
   /**
@@ -133,62 +92,39 @@ const MyCalculator = ({ hasSwitchedView }) => {
    */
   const handleNumPad = (e, keypad) => {
     const keyContent = keypad.name;
-    let newData;
-    // when user tap on decimal or 0 for the first time, do nothing
-    if (displayNumber === 0 && (keypad.value === null || keypad.value === 0))
-      return;
-    // if user has already selected decimal, and tap again, do nothing
-    if (hasDecimalSelected && keypad.value === null) return;
-    // if decimal is tapped, set hasDecimalSelected to true
-    if (keypad.value === null) {
+    let number;
+    /*
+     * decimal handling
+     *
+     * 1. can enter at the beginning 0.34
+     * 2. can enter after number selected 12.34
+     * 3. if decimal is already selected, do not add again
+     * */
+    if (keypad.value === null && !hasDecimalSelected && currentNumber === 0) {
       setDecimalSelected(true);
-    }
-
-    if (displayNumber === 0 || selectedNumber === 0) {
-      newData = keyContent;
-      setPreviousNumber(keyContent);
+      setCurrentNumber(0 + keyContent);
+    } else if (hasDecimalSelected && keypad.value === null) {
+      return false;
+    } else if (keypad.value === null) {
+      setDecimalSelected(true);
+      setCurrentNumber(currentNumber + keyContent);
     } else {
-      newData = selectedNumber + keyContent;
-      setPreviousNumber(previousNumber + keyContent);
-    }
-
-    //if operator has selected, then add operator and keyCotent to expression
-    if (hasOperatorSelected) {
-      setExpressions(expressions + selectedOperator.operator + keyContent);
-    } else {
-      //check if operator exist in expression
-      let operatorExist = false;
-      if (expressions !== null) {
-        for (let i = 0; i < operatorsVertical.length; i++) {
-          if (expressions.indexOf(operatorsVertical[i].operator) > 0) {
-            operatorExist = true;
-          }
-        }
-      }
-      if (operatorExist) {
-        setExpressions(expressions + keyContent);
+      if (currentNumber === 0) {
+        number = keyContent;
       } else {
-        setExpressions("parseFloat(" + newData + ")");
+        number = currentNumber + keyContent;
       }
+      DisplayScreen(number);
+      setCurrentNumber(number);
     }
-
-    setSelectedNumber(newData);
-    setOperatorSelected(false);
   };
 
   return (
-    <Calculator landscapeView={hasSwitchedView}>
+    <Calculator>
       <CalculatorDisplay>
         <ResultText>{displayNumber}</ResultText>
       </CalculatorDisplay>
       <CalculatorKeyPad>
-        <BigColumn landscapeView={hasSwitchedView}>
-          {otherSymbols.map((otherSymbol) => (
-            <Button otherKeys key={otherSymbol.name}>
-              {otherSymbol.symbol}
-            </Button>
-          ))}
-        </BigColumn>
         <FirstColumn>
           <Block>
             {operatorsHorizontal.map((operator) => (
@@ -221,7 +157,9 @@ const MyCalculator = ({ hasSwitchedView }) => {
                 key={operator.name}
                 onClick={(e) => handleOperator(e, operator)}
               >
-                {operator.symbol}
+                <__VerticalOperatorButton symbol={operator.name}>
+                  {operator.symbol}
+                </__VerticalOperatorButton>
               </Button>
             ))}
           </VerticalOperatorWrapper>
@@ -233,19 +171,12 @@ const MyCalculator = ({ hasSwitchedView }) => {
 
 export default MyCalculator;
 
-MyCalculator.propTypes = {
-  hasSwitchedView: PropTypes.bool.isRequired,
-};
-
 const Calculator = styled.div`
+  width: 310px;
   margin: 0 auto;
   background-color: #000;
   color: #fff;
   padding: 0.938rem 0.625rem;
-  @media (max-width: 414px) {
-    width: 310px;
-  }
-  ${(props) => (props.landscapeView ? "width: 790px" : "width: 310px")}
 `;
 
 const CalculatorDisplay = styled.div`
@@ -258,21 +189,6 @@ const ResultText = styled.h1`
 
 const CalculatorKeyPad = styled.div`
   display: flex;
-`;
-
-const BigColumn = styled.div`
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-  grid-template-rows: auto;
-  column-gap: 0.625rem;
-  row-gap: 0.313rem;
-  margin-bottom: 0.313rem;
-  justify-items: center;
-  margin-right: 0.625rem;
-  ${(props) => (props.landscapeView ? "display: grid;" : "display: none;")}
-
-  @media (max-width: 414px) {
-    display: none;
-  };
 `;
 
 const FirstColumn = styled.div`
@@ -295,6 +211,25 @@ const VerticalOperatorWrapper = styled.div`
   display: grid;
   justify-items: center;
   row-gap: 0.313rem;
+`;
+
+const __VerticalOperatorButton = styled.span`
+  position: relative;
+  ${({ symbol }) => {
+    if (symbol === "add" || symbol === "equals" || symbol === "subtract") {
+      return css`
+        top: -0.313rem;
+      `;
+    } else if (symbol === "multiply") {
+      return css`
+        top: 0.25rem;
+      `;
+    } else if (symbol === "divide") {
+      return css`
+        top: -0.25rem; ;
+      `;
+    }
+  }}
 `;
 
 const __NumPadButtons = styled(Button)`
